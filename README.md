@@ -4,7 +4,15 @@ Proyecto en Python para "Pensamiento Computacional para la Ingeniería
 Los números complejos tienen propiedades diferentes a los números reales y no se pueden realizar sus operaciones en una calculadora convencional. Un programa para idear una calculadora de números complejos facilitaría y aumentaría la eficiencia al momento de hacer cálculos con este tipo de números. Los números complejos son de suma importancia y uso en diferentes ramas de la ingeniería, por ejemplo para análisis de señales, teoremas de residuos, geometría compleja, etc.
 
 # ENTRADAS
-Entradas de tipo float<br>
+pr1 = float<br>
+pi1 = float<br>
+pr2 = float<br>
+pi2 = float<br>
+r1 = float<br>
+ang1 = float<br>
+r2 = float<br>
+ang2 = float<br>
+exp = int<br>
 
 # ALGORITMO
 1.	Pedir al usuario el primer valor<br>
@@ -74,6 +82,15 @@ iii.	Utilizar la fórmula para obtener las raíces<br>
 iv.	Mandar los resultados dependiendo del número de la raíz<br>
 
 # SALIDAS
-- Float<br>
-- Array Float<br>
-
+sumaV = array float<br>
+restaV = array float<br>
+multV  = array float<br>
+divV = array float<br>
+potenciaV = array float<br>
+raizV = array float<br>
+sumaT = array float<br>
+restaT = array float<br>
+multT = array float<br>
+divT = array float<br>
+potenciaT = array float<br>
+raizT = array float<br>
