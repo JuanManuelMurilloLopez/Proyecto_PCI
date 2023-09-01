@@ -66,11 +66,11 @@ i.	Transformar los datos a forma trigonométrica<br>
 ii.	Pedir la raíz<br>
 iii.	Crear las “K” utilizando el número de la raíz y restándole 1 hasta llegar a 0<br>
 iv.	Utilizar la fórmula para obtener las raíces<br>
-v.	Mandar los resultados dependiendo del número de la raíz
-b.	Si el usuario ingresa los datos de forma trigonométrica
-i.	Pedir la raíz
-ii.	Crear las “K” utilizando el número de la raíz y restándole 1 hasta llegar a 0
-iii.	Utilizar la fórmula para obtener las raíces
+v.	Mandar los resultados dependiendo del número de la raíz<br>
+b.	Si el usuario ingresa los datos de forma trigonométrica<br>
+i.	Pedir la raíz<br>
+ii.	Crear las “K” utilizando el número de la raíz y restándole 1 hasta llegar a 0<br>
+iii.	Utilizar la fórmula para obtener las raíces<br>
 iv.	Mandar los resultados dependiendo del número de la raíz<br>
 
 # SALIDAS
