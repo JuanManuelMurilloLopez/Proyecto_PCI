@@ -71,7 +71,7 @@ b.	Si el usuario ingresa los datos de forma trigonométrica
 i.	Pedir la raíz
 ii.	Crear las “K” utilizando el número de la raíz y restándole 1 hasta llegar a 0
 iii.	Utilizar la fórmula para obtener las raíces
-iv.	Mandar los resultados dependiendo del número de la raíz
+iv.	Mandar los resultados dependiendo del número de la raíz<br>
 
 # SALIDAS
 - Float<br>
