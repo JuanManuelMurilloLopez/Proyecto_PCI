@@ -1,15 +1,60 @@
 import tkinter as tk
+from tkinter import ttk
 import numpy as np
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-#Configuración plt
+#Configuración de la ventana principal de Tkinter
+vForma = tk.Tk()
+vForma.title("Calculadora de Números Complejos")
+vForma.resizable(0,0)
+#Configurarción del PLT
 plt.style.use('ggplot')
 fig = plt.figure()
 ax = fig.add_subplot(1,1,1)
-ventana = tk.Tk()
-ventana.title("Calculadora de Números Complejos")
-#Función pasar un número de forma vectorial a trigonométrica
-def convertirVaT(num1):
+#Función radianes a grados
+radAgrad = 180/np.pi
+#Función grados a radianes
+gradArad = np.pi/180
+#Función para mosrar el resultado en la entrada de texto
+def mostrarResultado():
+    salidaResultado.config(state="normal")
+    salidaResultado.delete(0, tk.END)
+    salidaResultado.insert(0,[resultado[0],",",resultado[1]])
+    salidaResultado.config(state="readonly")
+#Función para recuperar los datos de las entradas en la ventana Vectorial
+def obtenerDatosVec():
+    global nr1,ni1,nr2,ni2,num1,num2
+    num1 = [float(nr1.get()), float(ni1.get())]
+    num2 = [float(nr2.get()), float(ni2.get())]
+    return num1,num2
+#Función para recuperar los datos de las entradas en la ventana Trig
+def obtenerDatosTrig():
+    global modulo, angulo, exponente
+    r = float(modulo.get())
+    ang = float(angulo.get())
+    exp = int(exponente.get())
+    return r, ang, exp
+#Función para graficación
+def graficarVec():
+    ax.scatter(resultado[0],resultado[1])
+    ax.scatter(num1[0],num1[1])
+    plt.annotate(("Num1"),[num1[0],num1[1]])
+    ax.scatter(num2[0],num2[1])
+    plt.annotate(("Num2"),[num2[0],num2[1]])
+#Función para mostrar la gráfica
+def mostrarGrafica():
+    ventanaCanvas = tk.Toplevel(vForma)
+    canvas = FigureCanvasTkAgg(fig,master=ventanaCanvas)
+    canvas.get_tk_widget().pack()
+    canvas.draw()
+#Función para protocolo de cerrar ventana
+def cerrarVentana():
+    vForma.destroy()
+    vForma.quit()
+vForma.protocol("WM_DELETE_WINDOW",cerrarVentana)
+#Función para convertir de Vectorial a Trig
+def convertirVaT():
+    num1 = obtenerDatosVec()
     if num1[0]<0:
         r = -(np.sqrt((num1[0]**2)+(num1[1]**2)))
         angRad = np.arctan((num1[1]/num1[0]))
@@ -30,190 +75,130 @@ def convertirVaT(num1):
         else:
             if angGrad < 0:
                 angGrad = angGrad +  360
-    return [r,angGrad]
-def convertirTaV(r,ang):
+    return r,angGrad
+#Función para convertir de Trig a Vectorial
+def convertirTaV():
+    r, ang = obtenerDatosTrig()
     angRad = (ang*gradArad)
-    pr = r*np.cos(angRad)
-    pi = r*np.sin(angRad)
-    return [pr,pi]
-#Función radianes  a grados
-radAgrad = 180/np.pi
-#Función grados a radianes
-gradArad = np.pi/180
-#Definir la suma
-def sumar(num1,num2):
-    return num1[0]+num2[0],num1[1]+num2[1]
-def plotSumar(num1,num2,suma):
-    ax.scatter(suma[0],suma[1])
-    plt.annotate(("Suma"),[suma[0],suma[1]])
-    ax.scatter(num1[0],num1[1])
-    plt.annotate(("Num1"),[num1[0],num1[1]])
-    ax.scatter(num2[0],num2[1])
-    plt.annotate(("Num2"),[num2[0],num2[1]])
-#Definir la resta
-def restar(num1,num2):
-    return num1[0]-num2[0],num1[1]-num2[1]
-def plotRestar(num1,num2,rest):
-    ax.scatter(rest[0],rest[1])  
-    plt.annotate(("Resta"),[rest[0],rest[1]])
-    ax.scatter(num1[0],num1[1])
-    plt.annotate(("Num1"),[num1[0],num1[1]])
-    ax.scatter(num2[0],num2[1])
-    plt.annotate(("Num2"),[num2[0],num2[1]])
-#Definir la multiplicación
-def multiplicar (num1,num2):
-     return num1[0]*num2[0]+num1[1]*num2[1]*-1,num1[0]*num2[1]+num1[1]*num2[0]
-def plotMultiplicar(num1,num2,mult):
-    ax.scatter(mult[0],mult[1])
-    plt.annotate(("Multiplicación"),[mult[0],mult[1]])
-    ax.scatter(num1[0],num1[1])
-    plt.annotate(("Num1"),[num1[0],num1[1]])
-    ax.scatter(num2[0],num2[1])
-    plt.annotate(("Num2"),[num2[0],num2[1]])
-#Definir la división
-def dividir(num1,num2):
-    return (num1[0]*num2[0]+num1[1]*num2[1])/((num2[0]**2)+(num2[1]**2)),((num2[0]*num1[1])-num1[0]*num2[1])/((num2[0]**2)+(num2[1]**2))
-def plotDividir(num1,num2,divs):
-    ax.scatter(divs[0],divs[1])
-    plt.annotate(("División"),[divs[0],divs[1]])
-    ax.scatter(num1[0],num1[1])
-    plt.annotate(("Num1"),[num1[0],num1[1]])
-    ax.scatter(num2[0],num2[1])
-    plt.annotate(("Num2"),[num2[0],num2[1]])
-#Definir la potencia
-def potenciar(r,ang,exp):
-    return (r**exp)*(np.cos(ang*exp*gradArad)),(r**exp)*(np.sin(ang*exp*gradArad))
-def plotPotenciar(num1,potencia):
-    ax.scatter(potencia[0],potencia[1])
-    plt.annotate(("Potencia"),[potencia[0],potencia[1]])
-    ax.scatter(num1[0],num1[1])
-    plt.annotate(("Num1"),[num1[0],num1[1]])
-#Definir la raíz
-def racionalizar(r,ang,exp):
-    k = 0
+    nr = r*np.cos(angRad)
+    ni = r*np.sin(angRad)
+    return nr,ni
+#Suma Vectorial
+def sumarVec():
+    global resultado
+    num1, num2 = obtenerDatosVec()
+    resultado = [num1[0]+num2[0],num1[1]+num2[1]]
+    mostrarResultado()
+    plt.annotate(("Suma"),[resultado[0],resultado[1]])
+    graficarVec()
+#Suma Trig **
+def sumarTrig():
+    global resultado 
+#Resta Vec
+def restarVec():
+    global resultado
+    num1, num2 = obtenerDatosVec()
+    resultado = [num1[0]-num2[0],num1[1]-num2[1]]
+    mostrarResultado()
+    plt.annotate(("Resta"),[resultado[0],resultado[1]])
+    graficarVec()
+#Multiplicación Vec
+def multiplicarVec():
+     global resultado
+     num1, num2 = obtenerDatosVec()
+     resultado = num1[0]*num2[0]+num1[1]*num2[1]*-1,num1[0]*num2[1]+num1[1]*num2[0]
+     mostrarResultado()
+     plt.annotate(("Multiplicación"),[resultado[0],resultado[1]])
+     graficarVec()
+#División Vec
+def dividirVec():
+    global resultado
+    num1, num2 = obtenerDatosVec()
+    resultado = (num1[0]*num2[0]+num1[1]*num2[1])/((num2[0]**2)+(num2[1]**2)),((num2[0]*num1[1])-num1[0]*num2[1])/((num2[0]**2)+(num2[1]**2))
+    mostrarResultado()
+    plt.annotate(("División"),[resultado[0],resultado[1]])
+    graficarVec()
+#Potencia Trig
+def potenciarTrig():
+    global resultado
+    r,ang,exp = obtenerDatosTrig()
+    resultado = (r**exp)*(np.cos(ang*exp*gradArad)),(r**exp)*(np.sin(ang*exp*gradArad))
+    mostrarResultado()
+#Raíz Trig
+def racionalizar():
+    global resultado
+    r, ang, exp = obtenerDatosTrig()
+    k = int(0)
+    resultado = exp
     for k in range(-1,(exp-1),1):
         raiz = (np.cos(((ang + 2*(k+1)*180)/exp)*gradArad))*r**(1/exp),(np.sin(((ang + 2*(k+1)*180)/exp)*gradArad))*r**(1/exp)
         k = k+1
-        print("Para K=",k)
-        print(raiz)
-        ax.scatter(raiz[0],raiz[1])
-        plt.annotate(("Raiz",k),[raiz[0],raiz[1]])
-        ax.scatter(num1[0],num1[1])
-        plt.annotate(("Num1"),[num1[0],num1[1]])
-def racionalizarTaV(r,ang,exp):
-    k = 0
-    for k in range(-1,(exp-1),1):
-        raiz = (np.cos(((ang + 2*(k+1)*180)/exp)*gradArad))*r**(1/exp),(np.sin(((ang + 2*(k+1)*180)/exp)*gradArad))*r**(1/exp)
-        k = k+1
-        raizV = convertirTaV(raiz[0],raiz[1])
-        print("Para K=",k)
-        print(raizV)
-        ax.scatter(raizV[0],raizV[1])
-        plt.annotate(("Raiz",k),[raizV[0],raizV[1]])
-        ax.scatter(num1[0],num1[1])
-        plt.annotate(("Num1"),[num1[0],num1[1]])
-def mostrarGrafica():
-    canvas = FigureCanvasTkAgg(fig,master=ventana)
-    canvas.get_tk_widget().pack()
-    canvas.draw()
-def cerrarVentana():
-    ventana.destroy()
-    ventana.quit()
-ventana.protocol("WM_DELETE_WINDOW",cerrarVentana)
-botonPlt = tk.Button(ventana,text="Graficar",command=mostrarGrafica)
-botonPlt.pack()
-#Definir forma de la entrada
-"""vectorial = 1
-trigonométrica = 2"""
-forma = float(input("¿Forma Vectorial o Trigonométrica?"))
-if forma == 1:
-    #Definir operación
-    """suma = 1
-    resta = 2
-    multiplicación = 3
-    división = 4
-    potencia = 5
-    raíz = 6"""
-    operacion = float(input("¿Qué operación desea hacer?"))
-    if operacion <= 4:
-        pr1 = float(input("Ingrese el valor de la parte real del primer número"))
-        pi1 = float(input("Ingrese el valor de la parte imaginaria del primer número"))
-        pr2 = float(input("Ingrese el valor de la parte real del segundo número"))
-        pi2 = float(input("Ingrese el valor de la parte imaginaria del segundo número"))
-        num1 = [pr1,pi1]
-        num2 = [pr2,pi2]
-        if operacion == 1:
-            suma = sumar(num1,num2)
-            print(suma)
-            plotSumar(num1,num2,suma)
-        elif operacion == 2:
-            rest = restar(num1,num2)
-            print(rest)
-            plotRestar(num1,num2,rest)
-        elif operacion == 3:
-            mult = multiplicar(num1,num2)
-            print(mult)
-            plotMultiplicar(num1,num2,mult)
-        elif operacion == 4:
-            div = dividir(num1,num2)
-            print(div)
-            plotDividir(num1,num2,div)
-    elif operacion == 5 or operacion == 6:
-        pr1 = float(input("Ingrese el valor de la parte real del número"))
-        pi1 = float(input("Ingrese el valor de la parte imaginaria del número"))
-        num1 = [pr1,pi1]
-        rang = convertirVaT(num1)
-        if operacion == 5:
-            exp = int(input("Ingrese la potencia a elevar"))
-            potenciaT = potenciar(rang[0],rang[1],exp)
-            potenciaV = convertirTaV(potenciaT[0],(potenciaT[1]))
-            print(potenciaV)
-            plotPotenciar(num1,potenciaV)
-        else:
-            exp = int(input("Ingrese el exponente de la raíz"))
-            raizV = racionalizarTaV(rang[0],rang[1],exp)
-            #raizV = convertirTaV(raizT[0],raizT[1])
-            print(raizV)
-elif forma ==2:
-    operacion = float(input("¿Qué operación desea hacer?"))
-    if operacion <= 4:
-        r1 = float(input("Ingrese el módulo del primer número"))
-        ang1 = float(input("Ingrese el ángulo del primer número"))
-        r2 = float(input("Ingrese el módulo del segundo número"))
-        ang2 = float(input("Ingrese el ángulo del segundo número"))
-        num1 = convertirTaV(r1,ang1)
-        num2 = convertirTaV(r2,ang2)
-        if operacion == 1:
-            sumaV = sumar(num1,num2)
-            sumaT = convertirVaT(sumaV)
-            print(sumaT)
-            plotSumar(num1,num2,sumaV)
-        if operacion == 2:
-            restV = restar(num1,num2)
-            restT = convertirVaT(restV)
-            print(restT)
-            plotRestar(num1,num2,restV)
-        if operacion == 3:
-            multV = multiplicar(num1,num2)
-            multT = convertirVaT(multV)
-            print(multT)
-            plotMultiplicar(num1,num2,multV)
-        if operacion == 4:
-            divV = dividir(num1,num2)
-            divT = convertirVaT(divV)
-            print(divT)
-            plotDividir(num1,num2,divV)
-    elif operacion == 5 or operacion == 6:
-        r = float(input("Ingrese el módulo del primer número"))
-        ang = float(input("Ingrese el ángulo del primer número"))
-        num1 = convertirTaV(r,ang)
-        if operacion == 5:
-            exp = int(input("Potencia a elevar"))
-            potencia = potenciar(r,ang,exp)
-            print(potencia)
-            plotPotenciar(num1,potencia)
-        else:
-            exp = int(input("Ingrese el exponente de la raíz"))
-            raiz = racionalizar(r,ang,exp)
-            print(raiz)
-ventana.mainloop()
+        label1 = ttk.Label(vfTrig,text=["Para K =",k])
+        label1.pack()
+        label2 = ttk.Label(vfTrig,text=raiz)
+        label2.pack()
+#Ventana de la forma Vectorial
+def formaVectorial():
+    global salidaResultado, nr1,ni1,nr2,ni2
+    vfVec = tk.Toplevel(vForma)
+    vfVec.title("Calculadora de Números Complejos")
+    vfVec.resizable(0, 0)
+    label1 = ttk.Label(vfVec, text="Ingresa la parte real del primer número")
+    label1.pack()
+    nr1 = ttk.Entry(vfVec)
+    nr1.pack()
+    label2 = ttk.Label(vfVec, text="Ingresa la parte imaginaria del primer número")
+    label2.pack()
+    ni1 = ttk.Entry(vfVec)
+    ni1.pack()
+    label3 = ttk.Label(vfVec, text="Ingresa la parte real del segundo número")
+    label3.pack()
+    nr2 = ttk.Entry(vfVec)
+    nr2.pack()
+    label4 = ttk.Label(vfVec, text="Ingresa la parte imaginaria del segundo número")
+    label4.pack()
+    ni2 = ttk.Entry(vfVec)
+    ni2.pack()
+    botonSuma = ttk.Button(vfVec, text="Suma", command=sumarVec)
+    botonSuma.pack()
+    botonResta = ttk.Button(vfVec,text="Resta",command=restarVec)
+    botonResta.pack()
+    botonMult = ttk.Button(vfVec, text="Multiplicación", command=multiplicarVec)
+    botonMult.pack()
+    botonDiv = ttk.Button(vfVec,text="División",command=dividirVec)
+    botonDiv.pack()
+    salidaResultado = ttk.Entry(vfVec, state="readonly")
+    salidaResultado.pack()
+    botonPlot = ttk.Button(vfVec,text="Graficar",command=mostrarGrafica)
+    botonPlot.pack()
+#Ventana de la forma Trigonométrica
+def formaTrigonometrica():
+    global salidaResultado, modulo, angulo, exponente
+    global vfTrig
+    vfTrig = tk.Toplevel(vForma)
+    vfTrig.title("Calculadora de Números Complejos")
+    vfTrig.resizable(0, 0)
+    label1 = ttk.Label(vfTrig,text="Ingrese el módulo")
+    label1.pack()
+    modulo = ttk.Entry(vfTrig)
+    modulo.pack()
+    label2 = ttk.Label(vfTrig, text="Ingrese el ángulo")
+    label2.pack()
+    angulo = ttk.Entry(vfTrig)
+    angulo.pack()
+    label3 = ttk.Label(vfTrig,text="Ingrese el exponente")
+    label3.pack()
+    exponente = ttk.Entry(vfTrig)
+    exponente.pack()
+    botonPot = ttk.Button(vfTrig,text="Potencia",command=potenciarTrig)
+    botonPot.pack()
+    botonRaiz = ttk.Button(vfTrig,text="Raíz",command=racionalizar)
+    botonRaiz.pack()
+    salidaResultado = ttk.Entry(vfTrig, state="readonly")
+    salidaResultado.pack()
+#Botones de comando de la ventana de Forma
+botonFVec = ttk.Button(vForma,text="Forma Vectorial",command=formaVectorial)
+botonFVec.pack()
+botonFTrig = ttk.Button(vForma,text="Forma Trigonométrica",command=formaTrigonometrica)
+botonFTrig.pack()  
+vForma.mainloop()
